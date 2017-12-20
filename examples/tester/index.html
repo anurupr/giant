@@ -8,7 +8,35 @@
 	<title>Giant Tester</title>
 </head>
 <body>
-	<!-- <script src="../../dist/giant.js"></script> -->
-	<script src="../../dist/giant.min.js"></script>
+	<script src="../../dist/giant.js"></script>
+	<!-- <script src="../../dist/giant.min.js"></script> -->
+
+	<script>
+		class Timer {
+			constructor() {
+				this.timer = 0;
+				this.requestId;
+
+				this.init();
+			}
+
+			init() {
+				this.requestId = g.game.bindRequestFrame(this.update, this);
+			}
+
+			update(time) {
+				this.timer = time;
+				console.log(this.timer);
+
+				this.requestId = g.game.bindRequestFrame(this.update, this);
+
+				if (this.timer >= 2000) {
+					g.game.cancelRequestFrame(this.requestId);
+				}
+			}
+		}
+
+		const t = new Timer();
+	</script>
 </body>
 </html>
