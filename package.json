@@ -9,10 +9,10 @@
   "author": "Monstruo Team",
   "license": "MIT",
   "scripts": {
-    "build": "npm run webpack --",
-    "watch": "npm run webpack-watch --",
+    "start": "npm run webpack-watch",
+    "build": "npm run webpack",
 
-    "webpack": "webpack",
+    "webpack": "webpack -p",
     "webpack-watch": "webpack --watch"
   },
   "devDependencies": {
