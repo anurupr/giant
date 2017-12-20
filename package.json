@@ -1,0 +1,30 @@
+{
+  "name": "giant-engine",
+  "version": "0.1.8",
+  "description": "A Javascript engine",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Monstruo Team",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run webpack --",
+    "watch": "npm run webpack-watch --",
+
+    "webpack": "webpack",
+    "webpack-watch": "webpack --watch"
+  },
+  "devDependencies": {
+    "ts-loader": "^3.2.0",
+    "tslint": "^5.8.0",
+    "tslint-loader": "^3.5.3",
+    "typescript": "^2.6.2",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
+    "@types/core-js": "^0.9.43",
+    "@types/node": "^8.5.1",
+    "ts-lint": "^4.5.1"
+  }
+}
