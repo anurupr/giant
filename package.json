@@ -11,10 +11,15 @@
   "scripts": {
     "start": "npm run webpack-watch",
     "build": "npm run webpack",
+    "test": "mocha -r ts-node/register ./test/**/*.spec.ts",
     "webpack": "webpack -p",
     "webpack-watch": "webpack --watch"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.10",
+    "@types/mocha": "^2.2.44",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
     "ts-loader": "^3.2.0",
     "tslint": "^5.8.0",
     "tslint-loader": "^3.5.3",
@@ -24,6 +29,7 @@
   "dependencies": {
     "@types/core-js": "^0.9.43",
     "@types/node": "^8.5.1",
-    "ts-lint": "^4.5.1"
+    "ts-lint": "^4.5.1",
+    "ts-node": "^4.0.2"
   }
 }

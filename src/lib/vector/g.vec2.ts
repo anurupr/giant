@@ -1,5 +1,10 @@
 import { math, utils } from '../';
 
+interface IVec2 {
+	x: number;
+	y: number;
+}
+
 export class Vec2 {
 	/* Static constants */
 
@@ -15,9 +20,22 @@ export class Vec2 {
 
 	/* Static methods */
 
-	public static destructure(x: any, y: number): { xval: number, yval: number } {
-		const xIsVector = (typeof(x) === 'object' || y === undefined);
-		return { xval: xIsVector ? x.x : x, yval: xIsVector ? x.y : y };
+	public static destructure(x: number, y?: number): IVec2;
+	public static destructure(arg: Vec2 | IVec2): IVec2;
+
+	public static destructure(arg: any, y?: number): IVec2 {
+		let xval = 0.0;
+		let yval = 0.0;
+
+		if (arg && arg instanceof Vec2 || typeof arg === 'object') {
+			xval = arg.x;
+			yval = arg.y;
+		} else {
+			xval = arg ? arg : 0.0;
+			yval = y ? y : 0.0;
+		}
+
+		return { x: xval, y: yval };
 	}
 
 	public static clone(...args: Vec2[]): Vec2[] | Vec2 {
@@ -69,13 +87,18 @@ export class Vec2 {
 
 	/* Instance methods */
 
-	constructor(x: number = 0.0, y: number = 0.0) {
+	constructor(x?: number, y?: number);
+	constructor(obj?: Vec2 | IVec2);
+
+	constructor(arg?: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
+
 		this.x = x;
 		this.y = y;
 	}
 
 	public get squaredMagnitude(): number {
-		return (this.x * this.x) + (this.y * this.y);
+		return Math.abs((this.x * this.x) + (this.y * this.y));
 	}
 
 	public get magnitude(): number {
@@ -83,7 +106,7 @@ export class Vec2 {
 	}
 
 	public get angle(): number {
-		return Math.atan(this.y / this.x);
+		return (Math.atan2(this.y, this.x) + math.TAU) % math.TAU;
 	}
 
 	public get normalized(): Vec2 {
@@ -96,21 +119,26 @@ export class Vec2 {
 	}
 
 	public clone(): Vec2 {
-		return new Vec2(this.x, this.y);
+		return new Vec2(this);
 	}
 
 	public toArray(): number[] {
 		return [this.x, this.y];
 	}
 
-	public set(x: number = 0.0, y: number = 0.0): this {
+	public set(x?: number, y?: number): Vec2;
+	public set(obj?: Vec2 | IVec2): Vec2;
+
+	public set(arg?: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
+
 		this.x = x;
 		this.y = y;
 
 		return this;
 	}
 
-	public normalize(): this {
+	public normalize() {
 		const magnitude = this.magnitude;
 
 		this.x /= magnitude;
@@ -119,12 +147,10 @@ export class Vec2 {
 		return this;
 	}
 
-	public operate(x: number | Vec2, y: number, method: (prev: number, value: number) => number): this {
-		const { xval, yval } = Vec2.destructure(x, y);
-
-		if (!isNaN(xval) && !isNaN(yval)) {
-			this.x = method(this.x, xval);
-			this.y = method(this.y, yval);
+	public operate(x: number, y: number, method: (prev: number, value: number) => number) {
+		if (!isNaN(x) && !isNaN(y)) {
+			this.x = method(this.x, x);
+			this.y = method(this.y, y);
 		} else {
 			throw Error('Invalid value at Vec2 operation');
 		}
@@ -132,40 +158,59 @@ export class Vec2 {
 		return this;
 	}
 
-	public add(x: any, y: number = x): this {
+	public add(x: number, y?: number): Vec2;
+	public add(obj: Vec2 | IVec2): Vec2;
+
+	public add(arg: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
 		return this.operate(x, y, (prev: number, value: number) => prev + value);
 	}
 
-	public subtract(x: any, y: number = x): this {
+	public subtract(x: number, y?: number): Vec2;
+	public subtract(obj: Vec2 | IVec2): Vec2;
+
+	public subtract(arg: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
 		return this.operate(x, y, (prev: number, value: number) => prev - value);
 	}
 
-	public scale(x: any, y: number = x): this {
+	public scale(x: number, y?: number): Vec2;
+	public scale(obj: Vec2 | IVec2): Vec2;
+
+	public scale(arg: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
 		return this.operate(x, y, (prev: number, value: number) => prev * value);
 	}
 
-	public divide(x: any, y: number = x): this {
+	public divide(x: number, y?: number): Vec2;
+	public divide(obj: Vec2 | IVec2): Vec2;
+
+	public divide(arg: any, yval?: number) {
+		const { x, y } = Vec2.destructure(arg, yval);
 		return this.operate(x, y, (prev: number, value: number) => prev / value);
 	}
 
-	public equals(x: number | Vec2, y: number): boolean {
-		const { xval, yval } = Vec2.destructure(x, y);
+	public equals(x: number, y?: number): boolean;
+	public equals(obj: Vec2 | IVec2): boolean;
 
-		if (!isNaN(xval) && !isNaN(yval)) {
-			return this.x === xval && this.y === yval;
+	public equals(arg: any, yval?: number): boolean {
+		const { x, y } = Vec2.destructure(arg, yval);
+
+		if (!isNaN(x) && !isNaN(y)) {
+			return this.x === x && this.y === y;
 		} else {
 			throw Error('Invalid value at Vec2 comparison');
 		}
 	}
 
-	public setMagnitude(magnitude: number): this {
+	public setMagnitude(magnitude: number) {
 		this.normalize();
 		this.scale(magnitude);
 
 		return this;
 	}
 
-	public rotate(angle: number): this {
+	public rotate(angle: number) {
 		this.x = (this.x * Math.cos(angle)) - (this.y * Math.sin(angle));
 		this.y = (this.x * Math.sin(angle)) + (this.y * Math.cos(angle));
 

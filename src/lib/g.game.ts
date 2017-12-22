@@ -36,9 +36,9 @@ export namespace game {
 	})();
 
 	const requestFrame =
-		(window as any).requestAnimationFrame       ||
-		(window as any).webkitRequestAnimationFrame ||
-		(window as any).mozRequestAnimationFrame    ||
+		(global as any).requestAnimationFrame       ||
+		(global as any).webkitRequestAnimationFrame ||
+		(global as any).mozRequestAnimationFrame    ||
 		framePolyfill;
 
 	export function bindRequestFrame(callback: (time: number) => any, who: object): number {
@@ -47,7 +47,7 @@ export namespace game {
 	}
 
 	const cancelFrame =
-		(window as any).cancelAnimationFrame;
+		(global as any).cancelAnimationFrame;
 
 	export function cancelRequestFrame(handle: number) {
 		const cancel = cancelFrame ? cancelFrame.bind(window) : () => null;
