@@ -7,7 +7,7 @@ export class Game {
 	public context: object = { };
 	public size: object = { };
 	public debug: boolean = true;
-	
+
 	public uniqueId: number = Date.now();
 
 	private sceneStack: IScene[] = [];
@@ -26,7 +26,7 @@ export class Game {
 	}
 
 	public popScene() {
-		let scene = this.sceneStack.pop();
+		const scene = this.sceneStack.pop();
 		if (scene) {
 			scene.onDestroy();
 		}
@@ -34,7 +34,7 @@ export class Game {
 
 	private start(): void {
 		this.startDirty = true;
-		let activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
 		if (activeScene) {
 			activeScene.onStart();
 		}
@@ -43,11 +43,11 @@ export class Game {
 	}
 
 	private update(ms: number): void {
-		let dt = (ms - this.lastTime) * 0.001;
+		const dt = (ms - this.lastTime) * 0.001;
 		this.lastTime = ms;
 		this.fps = 1 / dt;
 
-		let activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
 		if (activeScene) {
 			activeScene.onPreUpdate(ms, dt);
 			activeScene.onUpdate(ms, dt);
@@ -55,15 +55,14 @@ export class Game {
 
 			activeScene.onPreDraw(ms, dt);
 			activeScene.onDraw(ms, dt);
-			activeScene.onPostDraw(ms, dt);			
+			activeScene.onPostDraw(ms, dt);
 		}
 
-		bindRequestFrame(this.update, this);		
+		bindRequestFrame(this.update, this);
 	}
 }
 
 Object.seal(Game);
-
 
 const framePolyfill = (() => {
 	let clock = Date.now();

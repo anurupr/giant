@@ -1,6 +1,5 @@
 const game = new g.Game();
 (function() {
-	
 	let scene = new g.Scene();
 	let collection = new g.SimpleCollection();
 	let gameobject = {
