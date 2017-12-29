@@ -1,58 +1,99 @@
-export namespace game {
-	export const name: string = 'Game | Made with Giant';
-	export let fps: number = 0;
-	export let deltaTime: number = 0;
-	export let path: string = '';
-	export let canvas: object = { };
-	export let context: object = { };
-	export let size: object = { };
-	export let debug: boolean = true;
+import { IScene } from './scene';
 
-	export let uniqueId: number = Date.now();
+export class Game {
+	public readonly name: string = 'Game | Made with Giant';
+	public fps: number = 0;
+	public canvas: object = { };
+	public context: object = { };
+	public size: object = { };
+	public debug: boolean = true;
+	
+	public uniqueId: number = Date.now();
 
-	export function getUniqueId() {
-		return ++game.uniqueId;
+	private sceneStack: IScene[] = [];
+	private lastTime: number = 0;
+	private startDirty: boolean = false;
+
+	public getUniqueId() {
+		return ++this.uniqueId;
 	}
 
-	export function bindUniqueId(rec: object) {
-		Object.defineProperty(rec, 'id', {
-			value: game.getUniqueId(),
-		});
+	public pushScene(scene: IScene) {
+		this.sceneStack.push(scene);
+		if (this.startDirty) {
+			scene.onStart();
+		}
 	}
 
-	const framePolyfill = (() => {
-		let clock = Date.now();
-
-		return (callback: (time: number) => any) => {
-			const currTime = Date.now();
-
-			if (currTime - clock > 16) {
-				clock = currTime;
-				callback(currTime);
-			} else {
-				setTimeout(() => framePolyfill(callback), 0);
-			}
-		};
-	})();
-
-	const requestFrame =
-		(global as any).requestAnimationFrame       ||
-		(global as any).webkitRequestAnimationFrame ||
-		(global as any).mozRequestAnimationFrame    ||
-		framePolyfill;
-
-	export function bindRequestFrame(callback: (time: number) => any, who: object): number {
-		const req = requestFrame ? requestFrame.bind(window) : () => null;
-		return req(callback.bind(who));
+	public popScene() {
+		let scene = this.sceneStack.pop();
+		if (scene) {
+			scene.onDestroy();
+		}
 	}
 
-	const cancelFrame =
-		(global as any).cancelAnimationFrame;
+	private start(): void {
+		this.startDirty = true;
+		let activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		if (activeScene) {
+			activeScene.onStart();
+		}
 
-	export function cancelRequestFrame(handle: number) {
-		const cancel = cancelFrame ? cancelFrame.bind(window) : () => null;
-		return cancel(handle);
+		bindRequestFrame(this.update, this);
+	}
+
+	private update(ms: number): void {
+		let dt = (ms - this.lastTime) * 0.001;
+		this.lastTime = ms;
+		this.fps = 1 / dt;
+
+		let activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		if (activeScene) {
+			activeScene.onPreUpdate(ms, dt);
+			activeScene.onUpdate(ms, dt);
+			activeScene.onPostUpdate(ms, dt);
+
+			activeScene.onPreDraw(ms, dt);
+			activeScene.onDraw(ms, dt);
+			activeScene.onPostDraw(ms, dt);			
+		}
+
+		bindRequestFrame(this.update, this);		
 	}
 }
 
-Object.seal(game);
+Object.seal(Game);
+
+
+const framePolyfill = (() => {
+	let clock = Date.now();
+
+	return (callback: (time: number) => any) => {
+		const currTime = Date.now();
+
+		if (currTime - clock > 16) {
+			clock = currTime;
+			callback(currTime);
+		} else {
+			setTimeout(() => framePolyfill(callback), 0);
+		}
+	};
+})();
+
+const requestFrame =
+	(global as any).requestAnimationFrame ||
+	(global as any).webkitRequestAnimationFrame ||
+	(global as any).mozRequestAnimationFrame ||
+	framePolyfill;
+
+export function bindRequestFrame(callback: (time: number) => any, who: object): number {
+	const req = requestFrame ? requestFrame.bind(window) : () => null;
+	return req(callback.bind(who));
+}
+
+const cancelFrame = (global as any).cancelAnimationFrame;
+
+export function cancelRequestFrame(handle: number) {
+	const cancel = cancelFrame ? cancelFrame.bind(window) : () => null;
+	return cancel(handle);
+}
