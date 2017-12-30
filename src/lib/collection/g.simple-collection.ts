@@ -1,6 +1,18 @@
 import { ICollection } from './g.collection.interface';
 
 export class SimpleCollection implements ICollection {
+	public static parse(collection: Array<{ class: any, settings: any }>): SimpleCollection {
+		const parsedCollection = new SimpleCollection();
+		if (collection && Array.isArray(collection)) {
+			collection.forEach((obj) => {
+				const instance = new obj.class();
+				Object.assign(instance, obj.settings);
+				parsedCollection.add(instance);
+			});
+		}
+		return parsedCollection;
+	}
+
 	private data: any[] = [];
 
 	public add(object: any): void {
@@ -15,7 +27,7 @@ export class SimpleCollection implements ICollection {
 	}
 
 	public iterate(callback: (object: any) => void): void {
-		this.data.map(callback);
+		this.data.forEach(callback);
 	}
 
 }

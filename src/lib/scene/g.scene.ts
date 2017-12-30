@@ -1,10 +1,18 @@
-import { SimpleCollection } from '../collection';
+import { ICollection, SimpleCollection } from '../collection';
+import { SceneDefinition } from './g.scene-definition.type';
 import { IScene } from './g.scene.interface';
 
 export class Scene implements IScene {
-	public collection: SimpleCollection;
+	public name: string;
+	public collection: ICollection;
+	private startDirty: boolean = false;
+
+	public constructor(sceneDefinition: SceneDefinition) {
+		this.parse(sceneDefinition);
+	}
 
 	public onStart(): void {
+		this.startDirty = true;
 		this.collection.iterate((element) => {
 			if (element.onStart && typeof element.onStart === 'function') {
 				element.onStart();
@@ -66,6 +74,13 @@ export class Scene implements IScene {
 				element.onDestroy();
 			}
 		});
+	}
+
+	private parse(sceneDefinition: SceneDefinition) {
+		this.name = String(sceneDefinition.name || '');
+		if (sceneDefinition.collectionType === 'SimpleCollection') {
+			this.collection = SimpleCollection.parse(sceneDefinition.collection);
+		}
 	}
 
 }
