@@ -1,6 +1,12 @@
 import { IScene } from './scene';
 
 export class Game {
+	public static getUniqueId() {
+		return ++Game.uniqueId;
+	}
+
+	private static uniqueId: number = Math.floor(Math.random() * 100000);
+
 	public readonly name: string = 'Game | Made with Giant';
 	public fps: number = 0;
 	public canvas: object = { };
@@ -8,15 +14,9 @@ export class Game {
 	public size: object = { };
 	public debug: boolean = true;
 
-	public uniqueId: number = Date.now();
-
 	private sceneStack: IScene[] = [];
 	private lastTime: number = 0;
 	private startDirty: boolean = false;
-
-	public getUniqueId() {
-		return ++this.uniqueId;
-	}
 
 	public pushScene(scene: IScene) {
 		this.sceneStack.push(scene);

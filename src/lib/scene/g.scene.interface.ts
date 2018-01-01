@@ -1,7 +1,7 @@
-import { ICollection } from '../collection';
+import { SceneNode } from './g.scene-node';
 
 export interface IScene {
-	collection: ICollection;
+	collection: SceneNode[];
 	onStart(): void;
 	onPreUpdate(ms: number, dt: number): void;
 	onUpdate(ms: number, dt: number): void;

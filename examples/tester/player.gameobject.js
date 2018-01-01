@@ -1,13 +1,13 @@
-class Player {
+class Player extends g.SceneNode {
 	onStart() {
-		console.log("Player onStart", this.position);
+		console.log("Player onStart", this.position, this.ID);
 	}
 
 	onUpdate() {
-		console.log("Player onUpdate");
+		// ...
 	}
 
-	onDraw() {
-		console.log("Player onDraw");
+	onDestroy() {
+		console.log("Player onDestroy");
 	}
 }

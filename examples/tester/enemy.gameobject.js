@@ -1,13 +1,13 @@
-class Enemy {
+class Enemy extends g.SceneNode {
 	onStart() {
-		console.log("Enemy onStart", this.position);
+		console.log("Enemy onStart", this.position, this.ID);
 	}
 
 	onUpdate() {
-		console.log("Enemy onUpdate");
+		// ...
 	}
 
-	onDraw() {
-		console.log("Enemy onDraw");
+	onDestroy() {
+		console.log("Enemy onDestroy");
 	}
 }
