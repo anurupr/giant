@@ -4,4 +4,8 @@ export { utils } from './g.utils';
 export { Vec2, Vec3 } from './vector';
 export { MouseInput, KeyboardInput } from './input';
 export { EventEmitter } from './g.event-emitter';
+export { AssetManager, IAsset } from './g.asset-manager';
 export { IScene, Scene, SceneNode } from './scene';
+export * from './network';
+export * from './graphics';
+export * from './matrix';

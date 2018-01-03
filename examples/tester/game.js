@@ -1,12 +1,15 @@
-const game = new g.Game();
+const game = new g.Game(
+	new g.Renderer2D(480, 480), 
+	new g.AssetManager([
+		{ id: "player.heart", type: 'image', src: './assets/images/heart.png' },
+	])
+);
+
 (() => {
-	game.start();
+	game.renderer.context.imageSmoothingEnabled = false;
+	game.assetManager.onAssetsReady.subscribe(() => {
+		game.start();
+		game.pushScene(GameScene);
+	});
 
-	setTimeout(() => {
-		game.pushScene(GameScene);		
-	}, 1500);
-
-	setTimeout(() => {
-		game.popScene();
-	}, 1750)
 })();
