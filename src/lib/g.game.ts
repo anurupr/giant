@@ -1,6 +1,6 @@
 import { AssetManager } from './g.asset-manager';
 import { Renderer2D } from './graphics';
-import { IScene } from './scene';
+import { Scene } from './scene';
 
 export class Game {
 	public static getUniqueId() {
@@ -16,7 +16,7 @@ export class Game {
 	public size: object = { };
 	public debug: boolean = true;
 
-	private sceneStack: IScene[] = [];
+	private sceneStack: Scene[] = [];
 	private lastTime: number = 0;
 	private startDirty: boolean = false;
 
@@ -24,7 +24,7 @@ export class Game {
 
 	}
 
-	public pushScene(scene: IScene) {
+	public pushScene(scene: Scene) {
 		this.sceneStack.push(scene);
 		if (this.startDirty) {
 			scene.onStart();
@@ -40,7 +40,7 @@ export class Game {
 
 	public start(): void {
 		this.startDirty = true;
-		const activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: Scene = this.sceneStack[this.sceneStack.length - 1];
 		if (activeScene) {
 			activeScene.onStart();
 		}
@@ -53,7 +53,7 @@ export class Game {
 		this.lastTime = ms;
 		this.fps = Math.floor(1 / dt);
 
-		const activeScene: IScene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: Scene = this.sceneStack[this.sceneStack.length - 1];
 		if (activeScene) {
 			activeScene.onPreUpdate(ms, dt);
 			activeScene.onUpdate(ms, dt);

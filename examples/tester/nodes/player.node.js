@@ -1,5 +1,6 @@
 class Player extends g.SceneNode {
 	onStart() {
+		this.sprite = game.assetManager.getImage('player.heart');
 	}
 
 	onUpdate(ms) {
@@ -8,7 +9,6 @@ class Player extends g.SceneNode {
 	
 	onDraw() {
 		const context = game.renderer.getContext();
-		const sprite = game.assetManager.getImage('player.heart');
 
 		context.save();
 		context.transform(
@@ -16,7 +16,7 @@ class Player extends g.SceneNode {
 			this.transform.d, this.transform.e, this.transform.f,
 		);
 
-		context.drawImage(sprite, 0, 0, 1, 1);
+		context.drawImage(this.sprite, 0, 0, 1, 1);
 
 		context.restore();
 	}

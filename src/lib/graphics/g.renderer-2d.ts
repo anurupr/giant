@@ -2,7 +2,7 @@ import { dom } from '../g.dom';
 
 export class Renderer2D {
 	public canvas: HTMLCanvasElement;
-	public context: CanvasRenderingContext2D | null;
+	public context: CanvasRenderingContext2D;
 
 	constructor(width: number, height: number) {
 		this.createCanvas(width, height);
@@ -10,12 +10,10 @@ export class Renderer2D {
 	}
 
 	public clear(): void {
-		if (this.context) {
-			this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		}
+		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
-	public getContext(): CanvasRenderingContext2D | null {
+	public getContext(): CanvasRenderingContext2D {
 		return this.context;
 	}
 
@@ -27,7 +25,10 @@ export class Renderer2D {
 	}
 
 	private createContext() {
-		this.context = this.canvas.getContext('2d');
+		const context = this.canvas.getContext('2d');
+		if (context) {
+			this.context = context;
+		}
 	}
 
 }

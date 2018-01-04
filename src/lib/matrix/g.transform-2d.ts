@@ -16,7 +16,7 @@ export class Transform2D {
 	public x: number;
 	public y: number;
 
-	constructor(descriptor: {
+	constructor(descriptor?: {
 		x: number,
 		y: number,
 		width: number,
@@ -25,13 +25,13 @@ export class Transform2D {
 		anchorY: number,
 		angle: number,
 	}) {
-		this.angle = descriptor.angle || 0;
-		this.width = descriptor.width || 0;
-		this.height = descriptor.height || 0;
-		this.anchorX = descriptor.anchorX || 0;
-		this.anchorY = descriptor.anchorY || 0;
-		this.x = descriptor.x || 0;
-		this.y = descriptor.y || 0;
+		this.angle = descriptor ? descriptor.angle || 0 : 0;
+		this.width = descriptor ? descriptor.width || 1 : 1;
+		this.height = descriptor ? descriptor.height || 1 : 1;
+		this.anchorX = descriptor ? descriptor.anchorX || 0 : 0;
+		this.anchorY = descriptor ? descriptor.anchorY || 0 : 0;
+		this.x = descriptor ? descriptor.x || 0 : 0;
+		this.y = descriptor ? descriptor.y || 0 : 0;
 	}
 
 	public get a() {
