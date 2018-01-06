@@ -47,4 +47,7 @@ module.exports = {
 			'/**/*.js'
 		]
 	},
+	devServer: {
+		port: 8100
+	}
 };

@@ -9,11 +9,12 @@
   "author": "Monstruo Team",
   "license": "MIT",
   "scripts": {
-    "start": "npm run webpack-watch",
+    "start": "npm run webpack-serve",
     "build": "npm run webpack",
     "test": "mocha -r ts-node/register ./test/**/*.spec.ts",
     "webpack": "webpack -p",
-    "webpack-watch": "webpack --watch"
+    "webpack-watch": "webpack --watch",
+    "webpack-serve": "webpack-dev-server"
   },
   "devDependencies": {
     "@types/chai": "^4.0.10",
@@ -24,7 +25,8 @@
     "tslint": "^5.8.0",
     "tslint-loader": "^3.5.3",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.10.0"
   },
   "dependencies": {
     "@types/core-js": "^0.9.43",
