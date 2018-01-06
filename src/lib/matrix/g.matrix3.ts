@@ -139,8 +139,15 @@ export class Matrix3 {
 
 	public static determinant(m: Matrix3): number {
 		const a = m.data;
-		return (a[0] * a[4] * a[8] + a[1] * a[5] * a[6] + a[2] * a[3] * a[7]) -
-			(a[6] * a[4] * a[2] + a[7] * a[5] * a[0] + a[8] * a[3] * a[1]);
+		return (
+			a[0] * a[4] * a[8] +
+			a[1] * a[5] * a[6] +
+			a[2] * a[3] * a[7]
+		) - (
+			a[6] * a[4] * a[2] +
+			a[7] * a[5] * a[0] +
+			a[8] * a[3] * a[1]
+		);
 	}
 
 	public static inverse(m: Matrix3, output?: Matrix3): Matrix3 {
@@ -182,7 +189,7 @@ export class Matrix3 {
 		return out;
 	}
 
-	public data: Float32Array = new Float32Array(9);
+	public readonly data: Float32Array = new Float32Array(9);
 
 	constructor(
 		arg?: number | Float32Array | number[], b?: number, c?: number,
@@ -238,7 +245,7 @@ export class Matrix3 {
 		return this;
 	}
 
-	public toArray() {
+	public toArray(): number[] {
 		return [
 			this.data[0],
 			this.data[1],
@@ -250,6 +257,69 @@ export class Matrix3 {
 			this.data[7],
 			this.data[8],
 		];
+	}
+
+	public determinant(): number {
+		return Matrix3.determinant(this);
+	}
+
+	public equals(n: Matrix3): boolean {
+		return Matrix3.equals(this, n);
+	}
+
+	public multiply(n: Matrix3): Matrix3 {
+		return Matrix3.multiply(this, n, this);
+	}
+
+	public add(n: Matrix3): Matrix3 {
+		return Matrix3.add(this, n, this);
+	}
+
+	public multiplyScalar(scalar: number): Matrix3 {
+		return Matrix3.multiplyScalar(this, scalar, this);
+	}
+
+	public clone(): Matrix3 {
+		return new Matrix3().set(this);
+	}
+
+	public translate(x: number, y: number): Matrix3 {
+		this.data[2] += this.data[0] * x + this.data[1] * y;
+		this.data[5] += this.data[3] * x + this.data[4] * y;
+		this.data[8] += this.data[6] * x + this.data[7] * y;
+		return this;
+	}
+
+	public scale(x: number, y: number): Matrix3 {
+		this.data[0] *= x;
+		this.data[1] *= y;
+		this.data[3] *= x;
+		this.data[4] *= y;
+		this.data[6] *= x;
+		this.data[7] *= y;
+		return this;
+	}
+
+	public rotate(angle: number): Matrix3 {
+		const cos = Math.cos(angle);
+		const sin = Math.sin(angle);
+
+		this.data[0] = this.data[0] * cos + this.data[1] * -sin;
+		this.data[1] = this.data[0] * sin + this.data[1] * cos;
+		this.data[3] = this.data[3] * cos + this.data[4] * -sin;
+		this.data[4] = this.data[3] * sin + this.data[4] * cos;
+		this.data[6] = this.data[0] * cos + this.data[1] * -sin;
+		this.data[7] = this.data[0] * sin + this.data[1] * cos;
+
+		return this;
+	}
+
+	public inverse(): Matrix3 {
+		return Matrix3.inverse(this, this);
+	}
+
+	public transpose(): Matrix3 {
+		return Matrix3.transpose(this, this);
 	}
 
 }
