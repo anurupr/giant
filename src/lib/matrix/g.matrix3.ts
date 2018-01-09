@@ -1,6 +1,6 @@
 export class Matrix3 {
-	public static readonly identity = new Matrix3();
-	public static readonly zero = new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0);
+	public static readonly identity = new Matrix3().freeze();
+	public static readonly zero = new Matrix3(0, 0, 0, 0, 0, 0, 0, 0, 0).freeze();
 
 	public static multiply(m: Matrix3, n: Matrix3, output?: Matrix3): Matrix3 {
 		const out = output || new Matrix3();
@@ -91,7 +91,7 @@ export class Matrix3 {
 			a[3] * x + a[4] * y + a[5],
 			a[6],
 			a[7],
-			a[6] * x + a[7] * y + a[8],
+			a[8],
 		);
 
 		return out;
@@ -108,8 +108,8 @@ export class Matrix3 {
 			a[3] * x,
 			a[4] * y,
 			a[5],
-			a[6] * x,
-			a[7] * y,
+			a[6],
+			a[7],
 			a[8],
 		);
 
@@ -126,11 +126,13 @@ export class Matrix3 {
 			a[0] * cos + a[1] * -sin,
 			a[0] * sin + a[1] * cos,
 			a[2],
+
 			a[3] * cos + a[4] * -sin,
 			a[3] * sin + a[4] * cos,
 			a[5],
-			a[6] * cos + a[7] * -sin,
-			a[6] * sin + a[7] * cos,
+
+			a[6],
+			a[7],
 			a[8],
 		);
 
@@ -189,7 +191,7 @@ export class Matrix3 {
 		return out;
 	}
 
-	public readonly data: Float32Array = new Float32Array(9);
+	public readonly data: number[] = new Array(9).fill(0);
 
 	constructor(
 		arg?: number | Float32Array | number[], b?: number, c?: number,
@@ -286,7 +288,6 @@ export class Matrix3 {
 	public translate(x: number, y: number): Matrix3 {
 		this.data[2] += this.data[0] * x + this.data[1] * y;
 		this.data[5] += this.data[3] * x + this.data[4] * y;
-		this.data[8] += this.data[6] * x + this.data[7] * y;
 		return this;
 	}
 
@@ -295,21 +296,21 @@ export class Matrix3 {
 		this.data[1] *= y;
 		this.data[3] *= x;
 		this.data[4] *= y;
-		this.data[6] *= x;
-		this.data[7] *= y;
 		return this;
 	}
 
 	public rotate(angle: number): Matrix3 {
 		const cos = Math.cos(angle);
 		const sin = Math.sin(angle);
+		let temp0 = this.data[0] * cos + this.data[1] * -sin;
+		let temp1 = this.data[0] * sin + this.data[1] * cos;
+		this.data[0] = temp0;
+		this.data[1] = temp1;
 
-		this.data[0] = this.data[0] * cos + this.data[1] * -sin;
-		this.data[1] = this.data[0] * sin + this.data[1] * cos;
-		this.data[3] = this.data[3] * cos + this.data[4] * -sin;
-		this.data[4] = this.data[3] * sin + this.data[4] * cos;
-		this.data[6] = this.data[0] * cos + this.data[1] * -sin;
-		this.data[7] = this.data[0] * sin + this.data[1] * cos;
+		temp0 = this.data[3] * cos + this.data[4] * -sin;
+		temp1 = this.data[3] * sin + this.data[4] * cos;
+		this.data[3] = temp0;
+		this.data[4] = temp1;
 
 		return this;
 	}
@@ -320,6 +321,83 @@ export class Matrix3 {
 
 	public transpose(): Matrix3 {
 		return Matrix3.transpose(this, this);
+	}
+
+	public freeze(): Matrix3 {
+		Object.freeze(this.data);
+		return this;
+	}
+
+	public set a(n: number) {
+		this.data[0] = n;
+	}
+
+	public get a(): number {
+		return this.data[0];
+	}
+
+	public set b(n: number) {
+		this.data[3] = n;
+	}
+
+	public get b(): number {
+		return this.data[3];
+	}
+
+	public set c(n: number) {
+		this.data[1] = n;
+	}
+
+	public get c(): number {
+		return this.data[1];
+	}
+
+	public set d(n: number) {
+		this.data[4] = n;
+	}
+
+	public get d(): number {
+		return this.data[4];
+	}
+
+	public set e(n: number) {
+		this.data[2] = n;
+	}
+
+	public get e(): number {
+		return this.data[2];
+	}
+
+	public set f(n: number) {
+		this.data[5] = n;
+	}
+
+	public get f(): number {
+		return this.data[5];
+	}
+
+	public set g(n: number) {
+		this.data[6] = n;
+	}
+
+	public get g(): number {
+		return this.data[6];
+	}
+
+	public set h(n: number) {
+		this.data[7] = n;
+	}
+
+	public get h(): number {
+		return this.data[7];
+	}
+
+	public set i(n: number) {
+		this.data[8] = n;
+	}
+
+	public get i(): number {
+		return this.data[8];
 	}
 
 }
