@@ -9,7 +9,7 @@
   "author": "Monstruo Team",
   "license": "MIT",
   "scripts": {
-    "start": "npm run webpack-serve",
+    "start": "npm run webpack-watch",
     "build": "npm run webpack",
     "test": "mocha -r ts-node/register ./test/**/*.spec.ts",
     "webpack": "webpack -p",
