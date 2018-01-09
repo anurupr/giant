@@ -18,4 +18,8 @@ export abstract class SceneNode {
 	public abstract onPostDraw?(ms: number, dt: number): void;
 	public abstract onDestroy?(): void;
 
+	public equals(obj: SceneNode): boolean {
+		return this.ID === obj.ID;
+	}
+
 }

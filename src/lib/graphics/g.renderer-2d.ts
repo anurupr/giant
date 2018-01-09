@@ -1,4 +1,5 @@
 import { dom } from '../g.dom';
+import { Matrix3 } from '../matrix';
 
 export class Renderer2D {
 	public canvas: HTMLCanvasElement;
@@ -11,6 +12,22 @@ export class Renderer2D {
 
 	public clear(): void {
 		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	}
+
+	public save(): void {
+		this.context.save();
+	}
+
+	public transform(matrix: Matrix3) {
+		this.context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
+	}
+
+	public restore(): void {
+		this.context.restore();
+	}
+
+	public drawImage(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap): void {
+		this.context.drawImage(image, 0, 0, 1, 1);
 	}
 
 	public getContext(): CanvasRenderingContext2D {

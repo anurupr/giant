@@ -60,9 +60,12 @@ export class Game {
 			activeScene.onPostUpdate(ms, dt);
 
 			this.renderer.clear();
+			this.renderer.save();
+			this.renderer.transform(activeScene.getCamera().getMatrix());
 			activeScene.onPreDraw(ms, dt);
 			activeScene.onDraw(ms, dt);
 			activeScene.onPostDraw(ms, dt);
+			this.renderer.restore();
 		}
 
 		bindRequestFrame(this.update, this);
