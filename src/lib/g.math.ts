@@ -81,12 +81,8 @@ export namespace math {
 		return ((rad * 180 / Math.PI) + 360) % 360;
 	}
 
-	export function approximately(a: number, b: number, difference: number = Number.EPSILON): boolean {
-		const d = digits(difference);
-		const fixedA = precision(a, d);
-		const fixedB = precision(b, d);
-		const val = Math.abs(fixedA - fixedB);
-		return val <= difference;
+	export function approximately(a: number, b: number, difference: number = 0): boolean {
+		return math.inRange(Math.abs(a - b), difference - 0.000000000001, difference + 0.000000000001);
 	}
 }
 
