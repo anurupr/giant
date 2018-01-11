@@ -38,7 +38,10 @@ module.exports = {
 		]
 	},
 	resolve: {
-		extensions: [ '.js', '.ts', '.tsx' ]
+		extensions: [ '.js', '.ts', '.tsx' ],
+		alias: {
+			'@': path.resolve(__dirname, 'src/')
+		}
 	},
 	watchOptions: {
 		ignored: [

@@ -1,4 +1,5 @@
-import { math, utils } from '../';
+import { math } from '../g.math';
+import { utils } from '../g.utils';
 
 interface IVec2 {
 	x: number;
@@ -38,12 +39,14 @@ export class Vec2 {
 		return { x: xval, y: yval };
 	}
 
-	public static clone(...args: Vec2[]): Vec2[] | Vec2 {
-		const vectorList = utils.arrayFlatten(args).map((vector: Vec2) => new Vec2(vector.x, vector.y));
-		return vectorList.length > 1 ? vectorList : vectorList[0];
+	public static clone(arr: Vec2[]): Vec2[];
+	public static clone(...args: Vec2[]): Vec2[];
+
+	public static clone(...args: any[]): Vec2[] {
+		return utils.arrayFlatten(args).map((vector: Vec2) => new Vec2(vector.x, vector.y));
 	}
 
-	public static operate(args: Vec2[], method: (prev: number, value: number) => number): Vec2 {
+	public static map(args: Vec2[], method: (prev: number, value: number) => number): Vec2 {
 		const vectors = utils.arrayFlatten(args);
 		let x = 0.0;
 		let y = 0.0;
@@ -60,8 +63,11 @@ export class Vec2 {
 		return new Vec2(x, y);
 	}
 
-	public static add(...args: Vec2[]): Vec2 {
-		return Vec2.operate(args, (prev: number, value: number) => prev + value);
+	public static add(arr: Vec2[]): Vec2;
+	public static add(...args: Vec2[]): Vec2;
+
+	public static add(...args: any[]): Vec2 {
+		return Vec2.map(args, (prev: number, value: number) => prev + value);
 	}
 
 	public static distance(vec1: Vec2, vec2: Vec2): number {
@@ -147,7 +153,7 @@ export class Vec2 {
 		return this;
 	}
 
-	public operate(x: number, y: number, method: (prev: number, value: number) => number) {
+	public map(x: number, y: number, method: (prev: number, value: number) => number) {
 		if (!isNaN(x) && !isNaN(y)) {
 			this.x = method(this.x, x);
 			this.y = method(this.y, y);
@@ -163,7 +169,7 @@ export class Vec2 {
 
 	public add(arg: any, yval?: number) {
 		const { x, y } = Vec2.destructure(arg, yval);
-		return this.operate(x, y, (prev: number, value: number) => prev + value);
+		return this.map(x, y, (prev: number, value: number) => prev + value);
 	}
 
 	public subtract(x: number, y?: number): Vec2;
@@ -171,7 +177,7 @@ export class Vec2 {
 
 	public subtract(arg: any, yval?: number) {
 		const { x, y } = Vec2.destructure(arg, yval);
-		return this.operate(x, y, (prev: number, value: number) => prev - value);
+		return this.map(x, y, (prev: number, value: number) => prev - value);
 	}
 
 	public scale(x: number, y?: number): Vec2;
@@ -179,7 +185,7 @@ export class Vec2 {
 
 	public scale(arg: any, yval?: number) {
 		const { x, y } = Vec2.destructure(arg, yval);
-		return this.operate(x, y, (prev: number, value: number) => prev * value);
+		return this.map(x, y || x, (prev: number, value: number) => prev * value);
 	}
 
 	public divide(x: number, y?: number): Vec2;
@@ -187,7 +193,7 @@ export class Vec2 {
 
 	public divide(arg: any, yval?: number) {
 		const { x, y } = Vec2.destructure(arg, yval);
-		return this.operate(x, y, (prev: number, value: number) => prev / value);
+		return this.map(x, y, (prev: number, value: number) => prev / value);
 	}
 
 	public equals(x: number, y?: number): boolean;
@@ -210,9 +216,12 @@ export class Vec2 {
 		return this;
 	}
 
-	public rotate(angle: number) {
-		this.x = (this.x * Math.cos(angle)) - (this.y * Math.sin(angle));
-		this.y = (this.x * Math.sin(angle)) + (this.y * Math.cos(angle));
+	public rotate(radians: number) {
+		const prevX = this.x;
+		const prevY = this.y;
+
+		this.x = (prevX * Math.cos(radians)) - (prevY * Math.sin(radians));
+		this.y = (prevX * Math.sin(radians)) + (prevY * Math.cos(radians));
 
 		return this;
 	}
