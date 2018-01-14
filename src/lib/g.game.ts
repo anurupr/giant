@@ -1,14 +1,9 @@
+import { core } from '../g.core';
 import { AssetManager } from './g.asset-manager';
 import { Renderer2D } from './graphics';
 import { Scene } from './scene';
 
 export class Game {
-	public static getUniqueId() {
-		return ++Game.uniqueId;
-	}
-
-	private static uniqueId: number = Math.floor(Math.random() * 100000);
-
 	public readonly name: string = 'Game | Made with Giant';
 	public fps: number = 0;
 	public canvas: object = { };
@@ -38,71 +33,37 @@ export class Game {
 		}
 	}
 
+	public getActiveScene(): Scene {
+		return this.sceneStack[this.sceneStack.length - 1];
+	}
+
 	public start(): void {
 		this.startDirty = true;
-		const activeScene: Scene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: Scene = this.getActiveScene();
 		if (activeScene) {
 			activeScene.onStart();
 		}
 
-		bindRequestFrame(this.update, this);
+		core.requestNextFrame(this.update.bind(this));
 	}
 
 	private update(ms: number): void {
-		const dt = (ms - this.lastTime) * 0.001;
+		const dt = (ms - this.lastTime) / 0.001;
 		this.lastTime = ms;
 		this.fps = Math.floor(1 / dt);
 
-		const activeScene: Scene = this.sceneStack[this.sceneStack.length - 1];
+		const activeScene: Scene = this.getActiveScene();
 		if (activeScene) {
 			activeScene.onPreUpdate(ms, dt);
 			activeScene.onUpdate(ms, dt);
 			activeScene.onPostUpdate(ms, dt);
-
-			this.renderer.clear();
-			this.renderer.save();
-			this.renderer.transform(activeScene.getCamera().getMatrix());
 			activeScene.onPreDraw(ms, dt);
 			activeScene.onDraw(ms, dt);
 			activeScene.onPostDraw(ms, dt);
-			this.renderer.restore();
 		}
 
-		bindRequestFrame(this.update, this);
+		core.requestNextFrame(this.update.bind(this));
 	}
 }
 
 Object.seal(Game);
-
-const framePolyfill = (() => {
-	let clock = Date.now();
-
-	return (callback: (time: number) => any) => {
-		const currTime = Date.now();
-
-		if (currTime - clock > 16) {
-			clock = currTime;
-			callback(currTime);
-		} else {
-			setTimeout(() => framePolyfill(callback), 0);
-		}
-	};
-})();
-
-const requestFrame =
-	(global as any).requestAnimationFrame ||
-	(global as any).webkitRequestAnimationFrame ||
-	(global as any).mozRequestAnimationFrame ||
-	framePolyfill;
-
-export function bindRequestFrame(callback: (time: number) => any, who: object): number {
-	const req = requestFrame ? requestFrame.bind(window) : () => null;
-	return req(callback.bind(who));
-}
-
-const cancelFrame = (global as any).cancelAnimationFrame;
-
-export function cancelRequestFrame(handle: number) {
-	const cancel = cancelFrame ? cancelFrame.bind(window) : () => null;
-	return cancel(handle);
-}

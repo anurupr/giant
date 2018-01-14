@@ -1,7 +1,7 @@
-import { Game } from '../g.game';
+import { core } from '../../g.core';
 
 export abstract class SceneNode {
-	public readonly ID: number = Game.getUniqueId();
+	public readonly ID: number = core.getUniqueId();
 	public children: SceneNode[] = [];
 
 	public set(obj: SceneNode): SceneNode {
