@@ -63,6 +63,41 @@ export namespace math {
 	export function approximately(a: number, b: number, difference: number = 0): boolean {
 		return math.inRange(Math.abs(a - b), difference - 0.000000000001, difference + 0.000000000001);
 	}
+
+	export interface IRectangle {
+		x: number;
+		y: number;
+		width: number;
+		height: number;
+	}
+
+	export interface ICircle {
+		x: number;
+		y: number;
+		radius: number;
+	}
+
+	export interface IPoint {
+		x: number;
+		y: number;
+	}
+
+	export function checkRectanglePointCollision(a: IRectangle, b: IPoint): boolean {
+		return a.x < b.x && a.x + Math.abs(a.width) > b.x && a.y < b.y && a.y + Math.abs(a.height) > b.y;
+	}
+
+	export function checkCirclePointCollision(a: ICircle, b: IPoint): boolean {
+		return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) <= Math.pow(a.radius, 2);
+	}
+
+	export function checkRectangleCollision(a: IRectangle, b: IRectangle): boolean {
+		return math.rangesIntersect(a.x, a.x + a.width, b.x, b.x + b.width) &&
+			math.rangesIntersect(a.y, a.y + a.height, b.y + b.height, b.y + b.height);
+	}
+
+	export function checkCircleCollision(a: ICircle, b: ICircle): boolean {
+		return Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) <= Math.pow(a.radius + b.radius, 2);
+	}
 }
 
 Object.freeze(math);
