@@ -7,10 +7,10 @@ class Enemy extends g.SceneNode {
 	}
 
 	onDraw() {
-		game.renderer.save();
-		game.renderer.transform(this.transform.getMatrix());
-		game.renderer.drawImage(this.sprite);
-		game.renderer.restore();
+		this.renderer.save();
+		this.renderer.transform(this.transform.getMatrix());
+		this.renderer.drawImage(this.sprite);
+		this.renderer.restore();
 	}
 
 	onDestroy() {

@@ -1,117 +1,93 @@
+import { TreeNode } from '../common';
+import { Renderer2D } from '../graphics';
 import { Camera2D } from './g.camera-2d';
 import { SceneNode } from './g.scene-node';
-import { IScene } from './g.scene.interface';
 
-export class Scene implements IScene {
+export class Scene extends TreeNode {
 	public name: string;
-	public collection: SceneNode[];
-	private camera: Camera2D;
+	public renderer: Renderer2D;
+	public readonly cameras: Camera2D[] = [];
+
 	private startDirty: boolean = false;
 	private destroyDirty: boolean = false;
 
 	public onStart(): void {
 		this.startDirty = true;
-		this.callEvent('onStart', this.collection, 0, 0, true);
+		this.callEvent('onStart', 0, 0);
 	}
 
-	public onPreUpdate(ms: number, dt: number): void {
-		this.callEvent('onPreUpdate', this.collection, ms, dt, true);
+	public update(ms: number, dt: number): void {
+		this.callEvent('onPreUpdate', ms, dt);
+		this.callEvent('onUpdate', ms, dt);
+		this.callEvent('onPostUpdate', ms, dt);
 	}
 
-	public onUpdate(ms: number, dt: number): void {
-		this.callEvent('onUpdate', this.collection, ms, dt, true);
-	}
-
-	public onPostUpdate(ms: number, dt: number): void {
-		this.callEvent('onPostUpdate', this.collection, ms, dt, true);
-	}
-
-	public onPreDraw(ms: number, dt: number): void {
-		this.callEvent('onPreDraw', this.collection, ms, dt, true);
-	}
-
-	public onDraw(ms: number, dt: number): void {
-		this.callEvent('onDraw', this.collection, ms, dt, true);
-	}
-
-	public onPostDraw(ms: number, dt: number): void {
-		this.callEvent('onPostDraw', this.collection, ms, dt, true);
+	public draw(ms: number, dt: number): void {
+		this.renderer.clear();
+		this.cameras.forEach((camera) => {
+			this.renderer.save();
+			this.renderer.transform(camera.getMatrix());
+			this.callEvent('onPreDraw', ms, dt);
+			this.callEvent('onDraw', ms, dt);
+			this.callEvent('onPostDraw', ms, dt);
+			this.renderer.restore();
+		});
 	}
 
 	public onDestroy(): void {
-		this.callEvent('onDestroy', this.collection, 0, 0, true);
+		this.destroyDirty = true;
+		this.callEvent('onDestroy', 0, 0);
 	}
 
-	public set(scene: { name: string, collection: SceneNode[], camera: Camera2D }) {
+	public set(scene: { name: string, children: TreeNode[] }): this {
 		this.name = String(scene.name || '');
-		this.setCollection(scene.collection);
-		this.setCamera(scene.camera);
+		this.setChildren(scene.children);
 		return this;
 	}
 
-	public add(node: SceneNode) {
+	public setChildren(children: TreeNode[]): this {
+		super
+		.setChildren(children)
+		.iterateChildren((node) => {
+			if (node instanceof Camera2D) {
+				this.cameras.push(node);
+			}
+		});
+
+		return this;
+	}
+
+	public addChild(node: SceneNode): this {
+		super.addChild(node);
+
 		if (this.startDirty && node.onStart) {
 			node.onStart();
 		}
 
-		this.collection.push(node);
+		return this;
 	}
 
-	public remove(node: SceneNode) {
-		if (this.startDirty && node.onDestroy) {
+	public removeChild(node: SceneNode, deep: boolean): this {
+		super.removeChild(node, deep);
+
+		if (!this.destroyDirty && node.onDestroy) {
 			node.onDestroy();
 		}
 
-		this.collection.splice(this.collection.findIndex((el) => el.equals(node)), 1);
+		return this;
 	}
 
-	public setCollection(collection: SceneNode[] = []) {
-		if (this.collection && this.destroyDirty) {
-			this.collection.forEach((node) => {
-				if (node.onDestroy) {
-					node.onDestroy();
-				}
-			});
-		}
-
-		if (this.startDirty) {
-			collection.forEach((node) => {
-				if (node.onStart) {
-					node.onStart();
-				}
-			});
-		}
-
-		this.collection = collection;
+	public setRenderer(renderer: Renderer2D) {
+		this.renderer = renderer;
+		this.iterateChildren((node) => {
+			(node as SceneNode).setRenderer(renderer);
+		});
 	}
 
-	public setCamera(camera: Camera2D) {
-		if (this.destroyDirty && this.camera && this.camera.onDestroy) {
-			this.camera.onDestroy();
-		}
-
-		if (this.startDirty && camera.onStart) {
-			camera.onStart();
-		}
-
-		this.camera = camera;
-	}
-
-	public getCamera(): Camera2D {
-		return this.camera;
-	}
-
-	private callEvent(event: string, collection: SceneNode[], ms: number, dt: number, triggerCamera: boolean): void {
-		if (triggerCamera) {
-			this.triggerEvent(event, this.camera, ms, dt);
-		}
-
-		(collection || []).forEach((node) => {
-			this.triggerEvent(event, node, ms, dt);
-
-			if (node.children && Array.isArray(node.children)) {
-				this.callEvent(event, node.children, ms, dt, false);
-			}
+	private callEvent(event: string, ms: number, dt: number): void {
+		(this.children || []).forEach((node) => {
+			this.triggerEvent(event, node as SceneNode, ms, dt);
+			node.iterateChildren((child) => this.triggerEvent(event, child as SceneNode, ms, dt));
 		});
 	}
 
@@ -147,12 +123,18 @@ export class Scene implements IScene {
 					node.onDraw(ms, dt);
 				}
 				break;
+			case 'onPostDraw':
+				if (node.onPostDraw) {
+					node.onPostDraw(ms, dt);
+				}
+				break;
 			case 'onDestroy':
 				if (node.onDestroy) {
 					node.onDestroy();
 				}
 				break;
 		}
+
 	}
 
 }

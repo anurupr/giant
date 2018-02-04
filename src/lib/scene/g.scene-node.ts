@@ -1,11 +1,27 @@
 import { core } from '../../g.core';
+import { TreeNode } from '../common';
+import { Renderer2D } from '../graphics';
+import { Transform2D } from '../matrix';
+import { Scene } from './g.scene';
 
-export abstract class SceneNode {
+export abstract class SceneNode extends TreeNode {
 	public readonly ID: number = core.getUniqueId();
-	public children: SceneNode[] = [];
+	public transform: Transform2D = new Transform2D();
+	public renderer: Renderer2D;
+	private scene: Scene;
 
-	public set(obj: SceneNode): SceneNode {
+	public set(obj: SceneNode): this {
 		Object.assign(this, obj);
+		return this;
+	}
+
+	public setScene(scene: Scene): this {
+		this.scene = scene;
+		return this;
+	}
+
+	public setRenderer(renderer: Renderer2D): this {
+		this.renderer = renderer;
 		return this;
 	}
 

@@ -4,20 +4,18 @@ import { Renderer2D } from './graphics';
 import { Scene } from './scene';
 
 export class Game {
-	public readonly name: string = 'Game | Made with Giant';
+	public name: string = 'Game | Made with Giant';
 	public fps: number = 0;
-	public canvas: object = { };
-	public context: object = { };
-	public size: object = { };
-	public debug: boolean = true;
+	public debugMode: boolean = true;
 
-	private sceneStack: Scene[] = [];
-	private lastTime: number = 0;
+	private lastMilisecond: number = 0;
 	private startDirty: boolean = false;
+	private sceneStack: Scene[] = [];
 
-	constructor(public readonly renderer: Renderer2D, public readonly assetManager: AssetManager) {
-
-	}
+	constructor(
+		public renderer: Renderer2D,
+		public assetManager: AssetManager,
+	) {}
 
 	public pushScene(scene: Scene) {
 		this.sceneStack.push(scene);
@@ -26,10 +24,11 @@ export class Game {
 		}
 	}
 
-	public popScene() {
+	public popScene(): Scene|undefined {
 		const scene = this.sceneStack.pop();
 		if (scene) {
 			scene.onDestroy();
+			return scene;
 		}
 	}
 
@@ -41,28 +40,25 @@ export class Game {
 		this.startDirty = true;
 		const activeScene: Scene = this.getActiveScene();
 		if (activeScene) {
+			activeScene.setRenderer(this.renderer);
 			activeScene.onStart();
 		}
 
-		core.requestNextFrame(this.update.bind(this));
+		core.requestNextFrame(this.loop.bind(this));
 	}
 
-	private update(ms: number): void {
-		const dt = (ms - this.lastTime) / 0.001;
-		this.lastTime = ms;
+	private loop(ms: number): void {
+		const dt = (ms - this.lastMilisecond) / 0.001;
+		this.lastMilisecond = ms;
 		this.fps = Math.floor(1 / dt);
 
 		const activeScene: Scene = this.getActiveScene();
 		if (activeScene) {
-			activeScene.onPreUpdate(ms, dt);
-			activeScene.onUpdate(ms, dt);
-			activeScene.onPostUpdate(ms, dt);
-			activeScene.onPreDraw(ms, dt);
-			activeScene.onDraw(ms, dt);
-			activeScene.onPostDraw(ms, dt);
+			activeScene.update(ms, dt);
+			activeScene.draw(ms, dt);
 		}
 
-		core.requestNextFrame(this.update.bind(this));
+		core.requestNextFrame(this.loop.bind(this));
 	}
 }
 
