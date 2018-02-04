@@ -194,54 +194,70 @@ export class Matrix3 {
 	public readonly data: number[] = new Array(9).fill(0);
 
 	constructor(
-		arg?: number | Float32Array | number[], b?: number, c?: number,
+		arg?: number | Matrix3 | Float32Array | number[] | { a?: number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
+		b?: number, c?: number,
 		d?: number, e?: number, f?: number,
 		g?: number, h?: number, i?: number,
 	) {
 		this.set(arg, b, c, d, e, f, g, h, i);
 	}
 
+	/**  */
 	public set(
-		arg?: number | Matrix3 | Float32Array | number[], b?: number, c?: number,
+		arg?: number | Matrix3 | Float32Array | number[] | 
+		{ a?:number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
+		b?: number, c?: number,
 		d?: number, e?: number, f?: number,
 		g?: number, h?: number, i?: number,
-	): Matrix3 {
-		if (!arg || typeof arg === 'number') {
-			this.data[0] = arg || 1;
+	): this {
+		if (arg === undefined || arg === null || typeof arg === 'number') {
+			this.data[0] = arg === undefined ? 1 : arg;
 			this.data[1] = b || 0;
 			this.data[2] = c || 0;
 
 			this.data[3] = d || 0;
-			this.data[4] = e || 1;
+			this.data[4] = e === undefined ? 1 : e;
 			this.data[5] = f || 0;
 
 			this.data[6] = g || 0;
 			this.data[7] = h || 0;
-			this.data[8] = arg || 1;
+			this.data[8] = i === undefined ? 1 : i;
 		} else if (arg instanceof Matrix3) {
-			this.data[0] = arg.data[0] || 1;
+			this.data[0] = arg.data[0] === undefined ? 1 : arg.data[0];
 			this.data[1] = arg.data[1] || 0;
 			this.data[2] = arg.data[2] || 0;
 
 			this.data[3] = arg.data[3] || 0;
-			this.data[4] = arg.data[4] || 1;
+			this.data[4] = arg.data[4] === undefined ? 1 : arg.data[4];
 			this.data[5] = arg.data[5] || 0;
 
 			this.data[6] = arg.data[6] || 0;
 			this.data[7] = arg.data[7] || 0;
-			this.data[8] = arg.data[8] || 1;
-		} else if (typeof arg === 'object') {
-			this.data[0] = arg[0] || 1;
+			this.data[8] = arg.data[8] === undefined ? 1 : arg.data[8];
+		} else if (arg instanceof Float32Array || Array.isArray(arg)) {
+			this.data[0] = arg[0] === undefined ? 1 : arg[0];
 			this.data[1] = arg[1] || 0;
 			this.data[2] = arg[2] || 0;
 
 			this.data[3] = arg[3] || 0;
-			this.data[4] = arg[4] || 1;
+			this.data[4] = arg[4] === undefined ? 1 : arg[4];
 			this.data[5] = arg[5] || 0;
 
 			this.data[6] = arg[6] || 0;
 			this.data[7] = arg[7] || 0;
-			this.data[8] = arg[8] || 1;
+			this.data[8] = arg[8] === undefined ? 1 : arg[8];
+		} else if (typeof arg === 'object') {
+			this.data[0] = arg.a === undefined ? 1 : arg.a;
+			this.data[1] = arg.b || 0;
+			this.data[2] = arg.c || 0;
+
+			this.data[3] = arg.d || 0;
+			this.data[4] = arg.e === undefined ? 1 : arg.e;
+			this.data[5] = arg.f || 0;
+
+			this.data[6] = arg.g || 0;
+			this.data[7] = arg.h || 0;
+			this.data[8] = arg.i === undefined ? 1 : arg.i;
 		}
 
 		return this;
@@ -269,29 +285,32 @@ export class Matrix3 {
 		return Matrix3.equals(this, n);
 	}
 
-	public multiply(n: Matrix3): Matrix3 {
-		return Matrix3.multiply(this, n, this);
+	public multiply(n: Matrix3): this {
+		Matrix3.multiply(this, n, this);
+		return this;
 	}
 
-	public add(n: Matrix3): Matrix3 {
-		return Matrix3.add(this, n, this);
+	public add(n: Matrix3): this {
+		Matrix3.add(this, n, this);
+		return this;
 	}
 
-	public multiplyScalar(scalar: number): Matrix3 {
-		return Matrix3.multiplyScalar(this, scalar, this);
+	public multiplyScalar(scalar: number): this {
+		Matrix3.multiplyScalar(this, scalar, this);
+		return this;
 	}
 
 	public clone(): Matrix3 {
-		return new Matrix3().set(this);
+		return new Matrix3(this);
 	}
 
-	public translate(x: number, y: number): Matrix3 {
+	public translate(x: number, y: number): this {
 		this.data[2] += this.data[0] * x + this.data[1] * y;
 		this.data[5] += this.data[3] * x + this.data[4] * y;
 		return this;
 	}
 
-	public scale(x: number, y: number): Matrix3 {
+	public scale(x: number, y: number): this {
 		this.data[0] *= x;
 		this.data[1] *= y;
 		this.data[3] *= x;
@@ -299,7 +318,7 @@ export class Matrix3 {
 		return this;
 	}
 
-	public rotate(angle: number): Matrix3 {
+	public rotate(angle: number): this {
 		const cos = Math.cos(angle);
 		const sin = Math.sin(angle);
 		let temp0 = this.data[0] * cos + this.data[1] * -sin;
@@ -315,15 +334,17 @@ export class Matrix3 {
 		return this;
 	}
 
-	public inverse(): Matrix3 {
-		return Matrix3.inverse(this, this);
+	public inverse(): this {
+		Matrix3.inverse(this, this);
+		return this;
 	}
 
-	public transpose(): Matrix3 {
-		return Matrix3.transpose(this, this);
+	public transpose(): this {
+		Matrix3.transpose(this, this);
+		return this;
 	}
 
-	public freeze(): Matrix3 {
+	public freeze(): this {
 		Object.freeze(this.data);
 		return this;
 	}
@@ -337,35 +358,35 @@ export class Matrix3 {
 	}
 
 	public set b(n: number) {
-		this.data[3] = n;
-	}
-
-	public get b(): number {
-		return this.data[3];
-	}
-
-	public set c(n: number) {
 		this.data[1] = n;
 	}
 
-	public get c(): number {
+	public get b(): number {
 		return this.data[1];
 	}
 
-	public set d(n: number) {
-		this.data[4] = n;
-	}
-
-	public get d(): number {
-		return this.data[4];
-	}
-
-	public set e(n: number) {
+	public set c(n: number) {
 		this.data[2] = n;
 	}
 
-	public get e(): number {
+	public get c(): number {
 		return this.data[2];
+	}
+
+	public set d(n: number) {
+		this.data[3] = n;
+	}
+
+	public get d(): number {
+		return this.data[3];
+	}
+
+	public set e(n: number) {
+		this.data[4] = n;
+	}
+
+	public get e(): number {
+		return this.data[4];
 	}
 
 	public set f(n: number) {
