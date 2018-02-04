@@ -30,8 +30,22 @@ export class Renderer2D {
 		this.context.drawImage(image, 0, 0, 1, 1);
 	}
 
-	public getContext(): CanvasRenderingContext2D {
-		return this.context;
+	public drawRectangle(x: number = 0, y: number = 0, width: number = 1, height: number = 1) {
+		this.context.beginPath();
+		this.context.rect(x, y, width, height);
+		this.context.closePath();
+		this.context.fill();
+		this.context.stroke();
+	}
+
+	public drawCircle(x: number = 0, y: number = 0, radius: number = 1) {
+		this.context.beginPath();
+		this.context.arc(x, y, radius, 0, Math.PI * 2, false);
+		this.context.closePath();
+	}
+
+	public drawText(text: string, x: number = 0, y: number = 0, maxWidth?: number) {
+		this.context.fillText(text, x, y, maxWidth);
 	}
 
 	private createCanvas(width: number, height: number): void {
@@ -44,6 +58,14 @@ export class Renderer2D {
 	private createContext() {
 		const context = this.canvas.getContext('2d');
 		if (context) {
+			context.webkitImageSmoothingEnabled = false;
+			context.mozImageSmoothingEnabled = false;
+			context.oImageSmoothingEnabled = false;
+			context.imageSmoothingEnabled = false;
+
+			context.fillStyle = 'transparent';
+			context.strokeStyle = 'transparent';
+
 			this.context = context;
 		}
 	}
