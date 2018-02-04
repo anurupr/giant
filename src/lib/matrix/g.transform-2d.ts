@@ -33,4 +33,12 @@ export class Transform2D {
 			.translate(-this.anchor.x, -this.anchor.y);
 	}
 
+	public getInverseMatrix(): Matrix3 {
+		return new Matrix3()
+			.translate(-this.position.x, -this.position.y)
+			.rotate(-this.angle)
+			.scale(1 / this.scale.x, 1 / this.scale.y)
+			.translate(this.anchor.x, this.anchor.y);
+	}
+
 }
