@@ -4,7 +4,6 @@ export class MouseInput {
 	private static readonly LEFT_BUTTON: number = 0;
 	private static readonly RIGHT_BUTTON: number = 2;
 	private static readonly AUXILIAR_BUTTON: number = 1;
-	private static instances: MouseInput[] = [];
 
 	public pageX: number;
 	public pageY: number;
@@ -21,25 +20,7 @@ export class MouseInput {
 	public onWheelMove: EventEmitter<any> = new EventEmitter();
 
 	constructor() {
-		MouseInput.instances.push(this);
-
-		if (MouseInput.instances.length === 0) {
-			addEventListener('mousedown', (event) => {
-				MouseInput.instances.forEach((instance) => instance.triggerDown(event));
-			});
-
-			addEventListener('mouseup', (event) => {
-				MouseInput.instances.forEach((instance) => instance.triggerUp(event));
-			});
-
-			addEventListener('mousemove', (event) => {
-				MouseInput.instances.forEach((instance) => instance.triggerMove(event));
-			});
-
-			addEventListener('mousewheel', (event) => {
-				MouseInput.instances.forEach((instance) => instance.triggerWheelMove(event));
-			});
-		}
+		this.setEventListeners();
 	}
 
 	/**
@@ -63,6 +44,10 @@ export class MouseInput {
 	 */
 	public triggerMove(init?: MouseEventInit): void {
 			const event = new MouseEvent('mousedown', init);
+			this.pageX = event.pageX;
+			this.pageY = event.pageY;
+			this.screenX = event.screenX;
+			this.screenY = event.screenY;
 			this.onMove.emit(event);
 	}
 
@@ -110,6 +95,13 @@ export class MouseInput {
 		this.screenY = Number(event.screenY || 0);
 
 		this.triggerUp(event);
+	}
+
+	private setEventListeners() {
+		window.addEventListener('mousedown', this.triggerDown.bind(this));
+		window.addEventListener('mouseup', this.triggerUp.bind(this));
+		window.addEventListener('mousemove', this.triggerMove.bind(this));
+		window.addEventListener('mousewheel', this.triggerWheelMove.bind(this));
 	}
 
 	private mouseMove(event: MouseEvent): void {
