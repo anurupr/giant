@@ -194,7 +194,8 @@ export class Matrix3 {
 	public readonly data: number[] = new Array(9).fill(0);
 
 	constructor(
-		arg?: number | Matrix3 | Float32Array | number[] | { a?: number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
+		arg?: number | Matrix3 | Float32Array | number[] |
+		{ a?: number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
 		b?: number, c?: number,
 		d?: number, e?: number, f?: number,
 		g?: number, h?: number, i?: number,
@@ -204,8 +205,8 @@ export class Matrix3 {
 
 	/**  */
 	public set(
-		arg?: number | Matrix3 | Float32Array | number[] | 
-		{ a?:number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
+		arg?: number | Matrix3 | Float32Array | number[] |
+		{ a?: number, b?: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number, i?: number },
 		b?: number, c?: number,
 		d?: number, e?: number, f?: number,
 		g?: number, h?: number, i?: number,

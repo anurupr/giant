@@ -6,6 +6,8 @@ export class Transform2D {
 	public anchor: Vec2 = new Vec2();
 	public position: Vec2 = new Vec2();
 	public angle: number;
+	private matrix: Matrix3 = new Matrix3();
+	private inverseMatrix: Matrix3 = new Matrix3();
 
 	constructor(descriptor?: {
 		x: number,
@@ -26,7 +28,8 @@ export class Transform2D {
 	}
 
 	public getMatrix(): Matrix3 {
-		return new Matrix3()
+		return this.matrix
+			.set()
 			.translate(this.position.x, this.position.y)
 			.rotate(this.angle)
 			.scale(this.scale.x, this.scale.y)
@@ -34,7 +37,8 @@ export class Transform2D {
 	}
 
 	public getInverseMatrix(): Matrix3 {
-		return new Matrix3()
+		return this.inverseMatrix
+			.set()
 			.translate(-this.position.x, -this.position.y)
 			.rotate(-this.angle)
 			.scale(1 / this.scale.x, 1 / this.scale.y)

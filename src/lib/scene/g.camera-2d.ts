@@ -8,6 +8,7 @@ export abstract class Camera2D extends SceneNode {
 	public position: Vec2 = new Vec2();
 	public angle: number;
 	public viewport: Vec2 = new Vec2();
+	private matrix = new Matrix3();
 
 	constructor(descriptor?: {
 		x: number,
@@ -33,7 +34,8 @@ export abstract class Camera2D extends SceneNode {
 	}
 
 	public getMatrix(): Matrix3 {
-		return new Matrix3()
+		return this.matrix
+			.set()
 			.translate(this.anchor.x * this.viewport.x, this.anchor.y * this.viewport.y)
 			.rotate(-this.angle)
 			.scale(1 / this.scale.x, 1 / this.scale.y)

@@ -19,7 +19,7 @@ export class Renderer2D {
 	}
 
 	public transform(matrix: Matrix3) {
-		this.context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
+		this.context.transform(matrix.a, matrix.d, matrix.b, matrix.e, matrix.c, matrix.f);
 	}
 
 	public restore(): void {
