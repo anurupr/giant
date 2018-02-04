@@ -1,4 +1,4 @@
-import { EventEmitter } from '../../g.event-emitter';
+import { EventEmitter } from '../../common';
 
 export class HttpRequest {
 	public request: XMLHttpRequest;

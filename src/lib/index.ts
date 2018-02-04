@@ -1,8 +1,8 @@
 export { Game } from './g.game';
 export { math } from './g.math';
 export { utils } from './g.utils';
-export { EventEmitter } from './g.event-emitter';
-export { AssetManager } from './g.asset-manager';
+export { EventEmitter } from './common';
+export { AssetManager } from './common';
 export * from './common';
 export * from './vector';
 export * from './input';

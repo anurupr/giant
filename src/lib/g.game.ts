@@ -1,5 +1,5 @@
 import { core } from '../g.core';
-import { AssetManager } from './g.asset-manager';
+import { AssetManager } from './common';
 import { Renderer2D } from './graphics';
 import { Scene } from './scene';
 
