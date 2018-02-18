@@ -26,8 +26,14 @@ export class Renderer2D {
 		this.context.restore();
 	}
 
-	public drawImage(image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap): void {
-		this.context.drawImage(image, 0, 0, 1, 1);
+	public drawImage(
+		image: HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap,
+		x: number = 0,
+		y: number = 0,
+		width: number = 1,
+		height: number = 1,
+	): void {
+		this.context.drawImage(image, x, y, width, height, 0, 0, 1, 1);
 	}
 
 	public drawRectangle(x: number = 0, y: number = 0, width: number = 1, height: number = 1) {
@@ -53,6 +59,14 @@ export class Renderer2D {
 		this.canvas.width = width;
 		this.canvas.height = height;
 		dom.insert('beforeend', this.canvas, dom.query('body').item(0));
+	}
+
+	public get alpha() {
+		return this.context.globalAlpha;
+	}
+
+	public set alpha(value: number) {
+		this.context.globalAlpha = value;
 	}
 
 	private createContext() {

@@ -1,11 +1,11 @@
-import 'mocha';
 import { expect, assert } from 'chai';
+import 'mocha';
 
 import { Matrix3 } from '../../src/lib/matrix/g.matrix3';
 
-describe("Matrix3 library", () => {
-	describe("Matrix3 constructor", () => {
-		it("Constructs new matrix defaulting to the identity matrix", () => {
+describe('Matrix3 library', () => {
+	describe('Matrix3 constructor', () => {
+		it('Constructs new matrix defaulting to the identity matrix', () => {
 			const matrix = new Matrix3();
 
 			expect(matrix.a).to.equal(1);
@@ -21,7 +21,7 @@ describe("Matrix3 library", () => {
 			expect(matrix.i).to.equal(1);
 		});
 
-		it("Constructs new matrix given 9 arguments", () => {
+		it('Constructs new matrix given 9 arguments', () => {
 			const args = {
 				a: Math.random(),
 				b: Math.random(),
@@ -48,7 +48,7 @@ describe("Matrix3 library", () => {
 			expect(matrix.i).to.equal(args.i);
 		});
 
-		it("Constructs new matrix given 3 arguments, and falls back to identity matrix", () => {
+		it('Constructs new matrix given 3 arguments, and falls back to identity matrix', () => {
 			const args = {
 				a: Math.random(),
 				b: Math.random(),
@@ -69,7 +69,7 @@ describe("Matrix3 library", () => {
 			expect(matrix.i).to.equal(1);
 		});
 
-		it("Constructs new matrix given a matrix", () => {
+		it('Constructs new matrix given a matrix', () => {
 			const a = new Matrix3([
 				Math.random(), Math.random(), Math.random(),
 				Math.random(), Math.random(), Math.random(),
@@ -89,7 +89,7 @@ describe("Matrix3 library", () => {
 			expect(a).to.not.equal(b);
 		});
 
-		it("Constructs new matrix given an array", () => {
+		it('Constructs new matrix given an array', () => {
 			const array = [
 				Math.random(), Math.random(), Math.random(),
 				Math.random(), Math.random(), Math.random(),
@@ -108,7 +108,7 @@ describe("Matrix3 library", () => {
 			expect(matrix.i).to.equal(array[8]);
 		});
 
-		it("Constructs new matrix given an object", () => {
+		it('Constructs new matrix given an object', () => {
 			const object = {
 				a: Math.random(), b: Math.random(), c: Math.random(),
 				d: Math.random(), e: Math.random(), f: Math.random(),
@@ -128,7 +128,7 @@ describe("Matrix3 library", () => {
 			expect(matrix).to.not.equal(object);
 		});
 
-		it("Constructs new matrix given a Float32Array", () => {
+		it('Constructs new matrix given a Float32Array', () => {
 			const array = new Float32Array([
 				Math.random(), Math.random(), Math.random(),
 				Math.random(), Math.random(), Math.random(),
@@ -148,8 +148,8 @@ describe("Matrix3 library", () => {
 		});
 	});
 
-	describe("Matrix3 static members", () => {
-		it("Identity is correct", () => {
+	describe('Matrix3 static members', () => {
+		it('Identity is correct', () => {
 			expect(Matrix3.identity.a).to.equal(1);
 			expect(Matrix3.identity.b).to.equal(0);
 			expect(Matrix3.identity.c).to.equal(0);
@@ -163,7 +163,7 @@ describe("Matrix3 library", () => {
 			expect(Matrix3.identity.i).to.equal(1);
 		});
 
-		it("Zero is correct", () => {
+		it('Zero is correct', () => {
 			expect(Matrix3.zero.a).to.equal(0);
 			expect(Matrix3.zero.b).to.equal(0);
 			expect(Matrix3.zero.c).to.equal(0);
@@ -177,7 +177,7 @@ describe("Matrix3 library", () => {
 			expect(Matrix3.zero.i).to.equal(0);
 		});
 
-		it("Modifying identity throws error", () => {
+		it('Modifying identity throws error', () => {
 			expect(() => {
 				Matrix3.identity.a = Math.random();
 				Matrix3.identity.b = Math.random();
@@ -191,7 +191,7 @@ describe("Matrix3 library", () => {
 			}).to.throw(Error);
 		});
 
-		it("Modifying zero throws error", () => {
+		it('Modifying zero throws error', () => {
 			expect(() => {
 				Matrix3.zero.a = Math.random();
 				Matrix3.zero.b = Math.random();
@@ -206,8 +206,8 @@ describe("Matrix3 library", () => {
 		});
 	});
 
-	describe("Matrix multiply", () => {
-		it("Multiplying random matrix by identity returns the same matrix", () => {
+	describe('Matrix multiply', () => {
+		it('Multiplying random matrix by identity returns the same matrix', () => {
 			const original = new Matrix3([
 				Math.random(), Math.random(), Math.random(),
 				Math.random(), Math.random(), Math.random(),
@@ -225,11 +225,11 @@ describe("Matrix3 library", () => {
 				expect(result.a).to.equal(original.a);
 				expect(result.b).to.equal(original.b);
 				expect(result.c).to.equal(original.c);
-	
+
 				expect(result.d).to.equal(original.d);
 				expect(result.e).to.equal(original.e);
 				expect(result.f).to.equal(original.f);
-	
+
 				expect(result.g).to.equal(original.g);
 				expect(result.h).to.equal(original.h);
 				expect(result.i).to.equal(original.i);
@@ -237,7 +237,8 @@ describe("Matrix3 library", () => {
 			}
 		});
 
-		it("Multiplying (1, 2, 3, 4, 5, 6, 7, 8, 9) by (9, 8, 7, 6, 5, 4, 3, 2, 1) gives (30, 24, 18, 84, 69, 54, 138, 114, 90)", () => {
+		it(`Multiplying (1, 2, 3, 4, 5, 6, 7, 8, 9) by (9, 8, 7, 6, 5, 4, 3, 2, 1) returns
+				(30, 24, 18, 84, 69, 54, 138, 114, 90)`, () => {
 			const a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 			const b = new Matrix3(9, 8, 7, 6, 5, 4, 3, 2, 1);
 			const result = Matrix3.multiply(a, b);
@@ -255,8 +256,9 @@ describe("Matrix3 library", () => {
 		});
 	});
 
-	describe("Matrix add", () => {
-		it("Adding (1, 2, 3, 4, 5, 6, 7, 8, 9) and (1, 9, 2, 8, 3, 7, 4, 6, 5) gives (2, 11, 5, 12, 8, 13, 11, 14, 14)", () => {
+	describe('Matrix add', () => {
+		it(`Adding (1, 2, 3, 4, 5, 6, 7, 8, 9) and (1, 9, 2, 8, 3, 7, 4, 6, 5) returns
+				(2, 11, 5, 12, 8, 13, 11, 14, 14)`, () => {
 			const a = new Matrix3(1, 2, 3, 4, 5, 6, 7, 8, 9);
 			const b = new Matrix3(1, 9, 2, 8, 3, 7, 4, 6, 5);
 			const result = Matrix3.add(a, b);
@@ -271,7 +273,8 @@ describe("Matrix3 library", () => {
 			expect(result.i).to.equal(14);
 		});
 
-		it("Adding (1, -2, 3, 4, -5, 6, 7, -8, 9) and (1, 9, 0, 8, 3, 7, 4, 6, 5) gives (2, 7, 3, 12, -2, 13, 11, -2, 14)", () => {
+		it(`Adding (1, -2, 3, 4, -5, 6, 7, -8, 9) and (1, 9, 0, 8, 3, 7, 4, 6, 5) returns
+				(2, 7, 3, 12, -2, 13, 11, -2, 14)`, () => {
 			const a = new Matrix3(1, -2, 3, 4, -5, 6, 7, -8, 9);
 			const b = new Matrix3(1, 9, 0, 8, 3, 7, 4, 6, 5);
 			const result = Matrix3.add(a, b);
@@ -287,8 +290,8 @@ describe("Matrix3 library", () => {
 		});
 	});
 
-	describe("Matrix multiplyScalar", () => {
-		it("Multiplying identity times 5, yields (5,0,0,0,5,0,0,5)", () => {
+	describe('Matrix multiplyScalar', () => {
+		it('Multiplying identity times 5, yields (5,0,0,0,5,0,0,5)', () => {
 			const matrix = new Matrix3();
 			matrix.multiplyScalar(5);
 			expect(matrix.a).to.equal(5);

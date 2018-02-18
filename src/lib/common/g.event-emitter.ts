@@ -1,7 +1,9 @@
-export class EventEmitter<T> {
-	private subscribers: Array<(value: T) => void> | undefined = [];
+export type Subscription<T> = (value?: T) => void;
 
-	public emit(value: T) {
+export class EventEmitter<T> {
+	private subscribers: Array<Subscription<T>> | undefined = [];
+
+	public emit(value?: T) {
 		setTimeout(() => {
 			(this.subscribers || []).forEach((subscriber) => {
 				subscriber(value);
@@ -9,20 +11,22 @@ export class EventEmitter<T> {
 		});
 	}
 
-	public subscribe(subscriber: (value: T) => void) {
+	public subscribe(subscriber: Subscription<T>): Subscription<T> {
 		(this.subscribers || []).push(subscriber);
-		return this;
+		return subscriber;
 	}
 
-	public unsubscribe(subscriber: (value: T) => void) {
+	public unsubscribe(subscriber: Subscription<T>): this {
 		const index = (this.subscribers || []).indexOf(subscriber);
 		if (index > -1) {
 			(this.subscribers || []).splice(index);
 		}
+
 		return this;
 	}
 
-	public onDestroy() {
+	public unsubscribeAll(): this {
 		this.subscribers = undefined;
+		return this;
 	}
 }
