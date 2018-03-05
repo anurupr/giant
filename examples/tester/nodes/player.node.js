@@ -8,12 +8,19 @@ class Player extends g.SceneNode {
 		this.sprite.renderer = this.renderer;
 		this.sprite.transform = this.transform;
 		this.sprite.fps = 8;
-		this.sprite.alpha = 0.8;
 	}
 
 	onUpdate(ms, dt) {
-		if (ms > 5000 && this.sprite.frames === this.normal) {
-			this.sprite.frames = this.angry;
+		if (ms > 5000 && ms < 10000 && this.sprite.getFrames() === this.normal) {
+			this.sprite.setFrames(this.angry);
+		}
+
+		if (ms > 10000 && this.sprite.getFrames() === this.angry) {
+			this.sprite.setFrames(this.normal);
+		}
+
+		if (this.sprite.getFrames() === this.angry) {
+			this.transform.position.add(2, 0);
 		}
 
 		this.transform.position.add(4, 0);

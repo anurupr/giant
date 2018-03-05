@@ -10,7 +10,7 @@ export class Sprite {
 	private timer: number = 0;
 
 	constructor(
-		public frames: SpriteFrame[],
+		private frames: SpriteFrame[],
 	) {}
 
 	public onUpdate(ms: number = 0, dt: number = 0.016) {
@@ -38,6 +38,15 @@ export class Sprite {
 
 	public get currentFrame() {
 		return this.frames[this.currentFrameIndex];
+	}
+
+	public setFrames(frames: SpriteFrame[]) {
+		this.frames = frames;
+		this.currentFrameIndex = 0;
+	}
+
+	public getFrames(): SpriteFrame[] {
+		return this.frames;
 	}
 
 	private nextFrame() {
