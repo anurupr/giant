@@ -58,7 +58,11 @@ export class Game {
 	}
 
 	private loop(ms: number): void {
-		const dt = (ms - this.lastMilisecond) / 1000;
+		let dt = (ms - this.lastMilisecond) / 1000;
+		if (dt > 0.1) {
+			dt = 0.01666;
+		}
+
 		this.lastMilisecond = ms;
 		this.fps = Math.floor(1 / dt);
 
